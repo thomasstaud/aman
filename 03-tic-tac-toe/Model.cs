@@ -1,7 +1,8 @@
 ﻿using aman.Models;
+using System.Text;
 using Weighted_Randomizer;
 
-namespace aman._02_tic_tac_toe;
+namespace aman._03_tic_tac_toe;
 
 public class Model : ModelBase
 {
@@ -10,9 +11,21 @@ public class Model : ModelBase
         this.parameter = parameter;
     }
 
-    public int Run(int turn, List<int> validFields)
+    public int Run(int[] playfield, bool reversed)
     {
-        int[] weights = ((Parameter)parameter).parameters[turn];
+        List<int> validFields = new();
+
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < 9; i++)
+        {
+            int field = playfield[i];
+            if (field == 0) validFields.Add(i);
+            else if (reversed && field == 1) field = 2;
+            else if (reversed && field == 2) field = 1;
+            sb.Append(field);
+        }
+
+        int[] weights = ((Parameter)parameter).parameters[sb.ToString()];
         return Shuffle(weights, validFields);
     }
 
@@ -24,7 +37,7 @@ public class Model : ModelBase
             randomizer.Add(field, weights[field]);
         }
 
-        for(; ; )
+        for (; ; )
         {
             int field = randomizer.NextWithRemoval();
             if (validFields.Contains(field)) return field;

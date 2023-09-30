@@ -1,23 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using aman.Models;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace aman._01_highest_number
+namespace aman._01_highest_number;
+
+public class Model : ModelBase
 {
-    public class Model
+    public Model(Parameter parameter)
     {
-        public float parameter;
+        this.parameter = parameter;
+    }
 
-        public Model(float parameter)
-        {
-            this.parameter = parameter;
-        }
-
-        public float Run()
-        {
-            return parameter;
-        }
+    public float Run()
+    {
+        return ((Parameter)parameter).value;
     }
 }

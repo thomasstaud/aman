@@ -1,22 +1,16 @@
-﻿using aman._02_tic_tac_toe;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+﻿using _02 = aman._02_tic_tac_toe;
+using _03 = aman._03_tic_tac_toe;
+using aman.Models;
 
 namespace aman
 {
     public class TicTacToe
     {
-        private static Model model;
+        private static ModelBase model;
 
         private static readonly Random r = new();
 
-        private static bool playerTurn;
-
-        public static void Run(Model model)
+        public static void Run(ModelBase model)
         {
             TicTacToe.model = model;
 
@@ -25,10 +19,10 @@ namespace aman
                 Play();
                 Console.WriteLine("Nochmal versuchen? (J/N)");
                 string s;
-                for (; ;)
+                for (; ; )
                 {
                     s = Console.ReadLine();
-                    if (s.ToLower() == "j" || s.ToLower() == "n") break;
+                    if (s.ToLower() is "j" or "n") break;
                 }
                 if (s.ToLower() == "n") break;
             }
@@ -44,6 +38,7 @@ namespace aman
             Console.WriteLine("\nViel Glück!!!");
 
             // 50% chance for player to start
+            bool playerTurn = false;
             if (r.Next(2) == 1)
                 playerTurn = true;
 
@@ -56,19 +51,30 @@ namespace aman
 
                     for (; ; )
                     {
-                        int field = Convert.ToInt32(Console.ReadLine());
-                        if (ValidFields(playfield).Contains(field))
+                        try
                         {
-                            playfield[field] = 1;
-                            break;
+                            int field = Convert.ToInt32(Console.ReadLine());
+                            if (ValidFields(playfield).Contains(field))
+                            {
+                                playfield[field] = 1;
+                                break;
+                            }
                         }
+                        catch { }
                         Console.WriteLine("\nThat's not valid!!! Try again!");
                     }
                 }
                 else
                 {
                     Console.WriteLine("\nAman is making his move...");
-                    int field = model.Run(i, ValidFields(playfield));
+
+                    int field;
+                    if (model is _02.Model m2)
+                        field = m2.Run(i, ValidFields(playfield));
+                    else if (model is _03.Model m3)
+                        field = m3.Run(playfield, !playerTurn);
+                    else throw new Exception("invalid model");
+
                     playfield[field] = 2;
                 }
 
